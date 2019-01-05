@@ -75,10 +75,10 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
             self.__unhandled_activity()
 
 
-try:
+'''try:
     SERVER = http.server.HTTPServer(('localhost', 9000), BotRequestHandler)
     print('Started http server on localhost:9000')
     SERVER.serve_forever()
 except KeyboardInterrupt:
     print('^C received, shutting down server')
-    SERVER.socket.close()
+    SERVER.socket.close()'''
