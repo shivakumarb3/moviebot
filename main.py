@@ -2,13 +2,11 @@ import http.server
 import json
 import asyncio
 
-from botbuilder.schema import (Activity, ActivityTypes, ChannelAccount)
+
+from botbuilder.schema import (Activity, ActivityTypes)
 from botframework.connector import ConnectorClient
 from botframework.connector.auth import (MicrosoftAppCredentials,
                                          JwtTokenValidation, SimpleCredentialProvider)
-from Person import *
-
-
 APP_ID = ''
 APP_PASSWORD = ''
 
@@ -31,7 +29,7 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         if activity.members_added[0].id != activity.recipient.id:
             credentials = MicrosoftAppCredentials(APP_ID, APP_PASSWORD)
-            reply = BotRequestHandler.__create_reply_activity(activity, 'Hello and welcome to the MOVIE BOT !')
+            reply = BotRequestHandler.__create_reply_activity(activity, 'Hello and welcome to the echo bot!')
             connector = ConnectorClient(credentials, base_url=reply.service_url)
             connector.conversations.send_to_conversation(reply.conversation.id, reply)
 
@@ -40,20 +38,7 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         credentials = MicrosoftAppCredentials(APP_ID, APP_PASSWORD)
         connector = ConnectorClient(credentials, base_url=activity.service_url)
-        a=''
-        b=''
-        res=''
-        p1=Person(activity.text)
-        a=p1.getIntent()
-        b=p1.getEntity()
-        if a=='present' and b=='movies' :
-           res="devdas"
-        if a=="review" and b=="rangasthalam":
-            res="4 outta 5 \n the movie was blockbuster at ticket window in 2018"
-        #here databse comes into role where movie name matches with the reviews
-        
-        reply = BotRequestHandler.__create_reply_activity(activity, 'movie bot: %s' % res )
-        print (activity.text)
+        reply = BotRequestHandler.__create_reply_activity(activity, 'You said: %s' % activity.text)
         connector.conversations.send_to_conversation(reply.conversation.id, reply)
 
     def __handle_authentication(self, activity):
@@ -92,7 +77,7 @@ class BotRequestHandler(http.server.BaseHTTPRequestHandler):
 
 try:
     SERVER = http.server.HTTPServer(('localhost', 9000), BotRequestHandler)
-    print('Started http server')
+    print('Started http server on localhost:9000')
     SERVER.serve_forever()
 except KeyboardInterrupt:
     print('^C received, shutting down server')
